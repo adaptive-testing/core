@@ -1,0 +1,38 @@
+{
+  "name": "adaptive-tester-core",
+  "version": "0.0.0",
+  "main": "lib/adaptive-tester-core.js",
+  "description": "The core functions for the adaptive tester application.",
+  "homepage": "https://github.com/adaptive-testing/core",
+  "bugs": "https://github.com/adaptive-testing/core/issues",
+  "author": {
+    "name": "Clay Diffrient",
+    "email": "clay.diffrient@gmail.com",
+    "url": "simplydiffrient.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "adaptive-testing/core"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "keywords": [],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.7.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.0",
+    "load-grunt-tasks": "~0.2.0",
+    "time-grunt": "~0.2.0",
+    "jshint-stylish": "~0.1.3",
+    "nodeunit": "~0.8.6"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+    "underscore": "^1.6.0"
+  }
+}
