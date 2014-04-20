@@ -1,4 +1,4 @@
-# adaptive-tester-core [![Build Status](https://secure.travis-ci.org/claydiffrient/adaptive-tester-core.png?branch=master)](http://travis-ci.org/claydiffrient/adaptive-tester-core)
+# adaptive-tester-core [![Build Status](https://secure.travis-ci.org/adaptive-testing/core.png?branch=master)](http://travis-ci.org/adaptive-testing/core)
 
 The core functions for the adaptive tester application.
 
