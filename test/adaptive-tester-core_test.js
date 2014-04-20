@@ -146,6 +146,30 @@ exports.adaptiveTesterCore = {
     var student = new Student(3);
     test.ok(student, 'should create a student without problem.');
     test.equals(student.getAskedQuestions().length, 0, 'should have 0 questions asked.');
+    test.done();
+  },
+  'a question which has been asked can be added to a student': function (test) {
+    test.expect(3);
+    var student = new Student(3);
+    test.ok(student, 'should create a student without problem.');
+    test.equals(student.getAskedQuestions().length, 0, 'should have 0 questions asked.');
+    student.addAskedQuestion('acb231d');
+    test.equals(student.getAskedQuestions().length, 1, 'should have 1 questions asked.');
+    test.done();
+  },
+  'a test can be created': function (test) {
+    test.expect(1);
+    var myTest = new Test();
+    test.ok(myTest, 'a test is created successfully');
+    test.done();
+  },
+  'a test has all the expected properties': function (test) {
+    test.expect(3);
+    var myTest = new Test();
+    test.ok(myTest, 'a test is created successfully');
+    test.equals(myTest.getQuestions().length, 0, 'should have no questions');
+    test.equals(myTest.getStudent() instanceof Student, 'should have a student');
+    test.done();
   }
 
 };
