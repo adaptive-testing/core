@@ -6,6 +6,7 @@ var Answer = require('../lib/answer');
 var ParameterError = require('../lib/ParameterError');
 var MultipleCorrectAnswersError = require('../lib/MultipleCorrectAnswersError');
 var Student = require('../lib/student');
+var Test = require('../lib/test');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -168,7 +169,7 @@ exports.adaptiveTesterCore = {
     var myTest = new Test();
     test.ok(myTest, 'a test is created successfully');
     test.equals(myTest.getQuestions().length, 0, 'should have no questions');
-    test.equals(myTest.getStudent() instanceof Student, 'should have a student');
+    test.equals(myTest.getStudent() instanceof Student, true, 'should have a student');
     test.done();
   }
 
