@@ -61,14 +61,14 @@ exports.adaptiveTesterCore = {
   'a question cannot be created without a valid text parameter': function (test) {
     test.expect(1);
     test.throws(function () {
-      new Question (null, testAnswers)
+      new Question (null, testAnswers);
     }, ParameterError, 'should fail for an empty question text string.');
     test.done();
   },
   'a question can be added only with an array of answers': function (test) {
     test.expect(2);
     test.doesNotThrow(function () {
-      new Question(testQuestionText, testAnswers, 3)
+      new Question(testQuestionText, testAnswers, 3);
     }, ParameterError, 'should not fail with valid input.');
     test.throws(function () {
       new Question(testQuestionText, ["yes", "now"], 3);
