@@ -63,6 +63,12 @@ exports.TestModule = {
     var question = this.test.getNextQuestion();
     test.equals(question.text, 'Different', "Question text does not match properly.");
     test.done();
+  },
+  'process response: update ability low difficulty correct': function (test) {
+    test.expect(1);
+    this.test.processResponse(testQuestions[0], "yes");
+    test.equals(this.test.student.getAbility(), 6, "Ability doesn't equal expected");
+    test.done();
   }
 
 
