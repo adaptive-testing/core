@@ -142,6 +142,14 @@ exports.adaptiveTesterCore = {
     test.equals(student.getAbility(), 3, 'ability should be equal after creation.');
     test.done();
   },
+  'a student created with no arguments gets default values': function (test) {
+    test.expect(3);
+    var student = new Student();
+    test.ok(student, 'should create a student without problem.');
+    test.equals(student.getName(), 'Default', 'name should be Default.');
+    test.equals(student.getAbility(), 5, 'ability should be 5.');
+    test.done();
+  },
   'a student has a list of previously asked questions': function (test) {
     test.expect(2);
     var student = new Student(3);
