@@ -88,19 +88,19 @@ exports.adaptiveTesterCore = {
     }, ParameterError, 'should fail for NaN input.');
     test.done();
   },
-  'a question fails if the difficulty is lower than 0 or more than 10': function (test) {
+  'a question fails if the difficulty is lower than 0 or more than 100': function (test) {
     test.expect(2);
     test.throws(function () {
       new Question(testQuestionText, testAnswers, -1);
     }, RangeError, 'should fail for negative difficulties');
     test.throws(function() {
-      new Question(testQuestionText, testAnswers, 11);
-    }, RangeError, 'should fail for difficulties over 10');
+      new Question(testQuestionText, testAnswers, 101);
+    }, RangeError, 'should fail for difficulties over 100');
     test.done();
   },
   'a question can be added into the core': function (test) {
     test.expect(1);
-    adaptiveTesterCore.addQuestion(new Question(testQuestionText, testAnswers, 3));
+    adaptiveTesterCore.addQuestion(new Question(testQuestionText, testAnswers, 30));
     test.equal(adaptiveTesterCore.getTotalQuestions(), 1, 'should have one question within.');
     test.done();
   },
@@ -116,15 +116,15 @@ exports.adaptiveTesterCore = {
     var answersCopy = testAnswers.slice();
     answersCopy.push(new Answer('It depends', true));
     test.throws(function () {
-       new Question(testQuestionText, answersCopy, 3);
+       new Question(testQuestionText, answersCopy, 30);
     }, MultipleCorrectAnswersError, 'should fail with more than one correct answer.');
     test.done();
   },
   'a student can be created with an initial ability': function (test) {
     test.expect(2);
-    var student = new Student(3);
+    var student = new Student(30);
     test.ok(student, 'should create a student without problem.');
-    test.equals(student.getAbility(), 3, 'ability should be equal after creation.');
+    test.equals(student.getAbility(), 30, 'ability should be equal after creation.');
     test.done();
   },
   'a student can be created with only a name': function (test) {
@@ -136,10 +136,10 @@ exports.adaptiveTesterCore = {
   },
   'a student can be created with both a name and an initial ability': function (test) {
     test.expect(3);
-    var student = new Student("Clay", 3);
+    var student = new Student("Clay", 30);
     test.ok(student, 'should create a student without problem.');
     test.equals(student.getName(), "Clay", 'name should be equal after creation.');
-    test.equals(student.getAbility(), 3, 'ability should be equal after creation.');
+    test.equals(student.getAbility(), 30, 'ability should be equal after creation.');
     test.done();
   },
   'a student created with no arguments gets default values': function (test) {
@@ -147,7 +147,7 @@ exports.adaptiveTesterCore = {
     var student = new Student();
     test.ok(student, 'should create a student without problem.');
     test.equals(student.getName(), 'Default', 'name should be Default.');
-    test.equals(student.getAbility(), 5, 'ability should be 5.');
+    test.equals(student.getAbility(), 50, 'ability should be 50.');
     test.done();
   },
   'a student has a list of previously asked questions': function (test) {
@@ -159,7 +159,7 @@ exports.adaptiveTesterCore = {
   },
   'a question which has been asked can be added to a student': function (test) {
     test.expect(3);
-    var student = new Student(3);
+    var student = new Student(30);
     test.ok(student, 'should create a student without problem.');
     test.equals(student.getAskedQuestions().length, 0, 'should have 0 questions asked.');
     student.addAskedQuestion('acb231d');

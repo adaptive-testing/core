@@ -30,10 +30,10 @@ var Answer = require('../lib/answer');
 var testAnswers = [new Answer("yes", true), new Answer("no", false) ];
 var testQuestionText = "Will this work?";
 var testQuestions = [];
-testQuestions.push(new Question(testQuestionText, testAnswers, 4.5));
-testQuestions.push(new Question('Different', testAnswers, 5));
-testQuestions.push(new Question('Another', testAnswers, 5.5));
-testQuestions.push(new Question('Testing again', testAnswers, 4.5));
+testQuestions.push(new Question(testQuestionText, testAnswers, 45));
+testQuestions.push(new Question('Different', testAnswers, 50));
+testQuestions.push(new Question('Another', testAnswers, 55));
+testQuestions.push(new Question('Testing again', testAnswers, 45));
 
 exports.TestModule = {
   setUp: function (done) {
@@ -49,17 +49,17 @@ exports.TestModule = {
   },
   'test question search returns greater than difficulty': function (test) {
     test.expect(1);
-    this.test.questions[1].difficulty = 10;
+    this.test.questions[1].difficulty = 100;
     var question = this.test.getNextQuestion();
     test.equals(question.text, 'Another', "Question text does not match properly.");
     test.done();
   },
   'test question search results returns less than difficulty': function (test) {
     test.expect(1);
-    this.test.questions[0].difficulty = 1.5;
-    this.test.questions[1].difficulty = 2.0;
-    this.test.questions[2].difficulty = 0.5;
-    this.test.questions[3].difficulty = 1.0;
+    this.test.questions[0].difficulty = 15;
+    this.test.questions[1].difficulty = 50;
+    this.test.questions[2].difficulty = 5;
+    this.test.questions[3].difficulty = 10;
     var question = this.test.getNextQuestion();
     test.equals(question.text, 'Different', "Question text does not match properly.");
     test.done();
@@ -67,9 +67,49 @@ exports.TestModule = {
   'process response: update ability low difficulty correct': function (test) {
     test.expect(1);
     this.test.processResponse(testQuestions[0], "yes");
-    test.equals(this.test.student.getAbility(), 6, "Ability doesn't equal expected");
+    var ability = this.test.student.getAbility();
+    test.ok((ability > 50) && (ability < 55), "Ability should be slightly higher.");
+    test.done();
+  },
+  'process response: update ability low difficulty incorrect': function (test) {
+    test.expect(1);
+    this.test.processResponse(testQuestions[0], "no");
+    var ability = this.test.student.getAbility();
+    console.log(ability);
+    test.ok(ability <= 0, "Ability should be much lower max of zero.");
+    test.done();
+  },
+  'process response: update ability equal difficulty correct': function (test) {
+    test.expect(1);
+    this.test.processResponse(testQuestions[1], "yes");
+    var ability = this.test.student.getAbility();
+    test.ok((ability > 50) && (ability < 55), "Ability should be a bit higher.");
+    test.done();
+  },
+  'process response: update ability equal difficulty incorrect': function (test) {
+    test.expect(1);
+    this.test.processResponse(testQuestions[1], "no");
+    var ability = this.test.student.getAbility();
+    test.ok((ability > 45) && (ability < 50), "Ability should be a bit lower.");
+    test.done();
+  },
+  'process response: update ability greater difficulty correct': function (test) {
+    test.expect(1);
+    this.test.questions[3].difficulty = 90;
+    this.test.processResponse(testQuestions[3], "yes");
+    var ability = this.test.student.getAbility();
+    console.log(ability);
+    test.ok((ability > 90) && (ability <= 100), "Ability should be a lot higher.");
+    test.done();
+  },
+  'process response: update ability greater difficulty incorrect': function (test) {
+    test.expect(1);
+    this.test.questions[3].difficulty = 90;
+    this.test.processResponse(testQuestions[3], "no");
+    var ability = this.test.student.getAbility();
+    console.log(ability);
+    test.ok((ability >= 49) && (ability <= 50), "Ability should be a bit lower.");
     test.done();
   }
-
 
 };
