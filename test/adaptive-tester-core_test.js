@@ -147,7 +147,7 @@ exports.adaptiveTesterCore = {
     var student = new Student();
     test.ok(student, 'should create a student without problem.');
     test.equals(student.getName(), 'Default', 'name should be Default.');
-    test.equals(student.getAbility(), 50, 'ability should be 50.');
+    test.equals(student.getAbility(), 5.0, 'ability should be 50.');
     test.done();
   },
   'a student has a list of previously asked questions': function (test) {

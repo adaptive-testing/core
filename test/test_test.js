@@ -32,7 +32,7 @@ var testQuestionText = "Will this work?";
 var testQuestions = [];
 testQuestions.push(new Question(testQuestionText, testAnswers, 45));
 testQuestions.push(new Question('Different', testAnswers, 50));
-testQuestions.push(new Question('Another', testAnswers, 55));
+testQuestions.push(new Question('Another', testAnswers, 5.5));
 testQuestions.push(new Question('Testing again', testAnswers, 45));
 
 exports.TestModule = {
@@ -109,6 +109,15 @@ exports.TestModule = {
     var ability = this.test.student.getAbility();
     console.log(ability);
     test.ok((ability >= 49) && (ability <= 50), "Ability should be a bit lower.");
+    test.done();
+  },
+  'process response: update ability slightly greater difficulty correct': function (test) {
+    test.expect(1);
+    this.test.questions[3].difficulty = 5.5;
+    this.test.processResponse(testQuestions[3], "yes");
+    var ability = this.test.student.getAbility();
+    console.log(ability);
+    test.ok((ability >= 5.0) && (ability <= 6.5), "Ability should be slightly higher, but not really high.");
     test.done();
   }
 
