@@ -33,6 +33,7 @@
     "test": "grunt"
   },
   "dependencies": {
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "underscore-query": "^0.4.0"
   }
 }
