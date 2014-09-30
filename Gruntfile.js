@@ -11,6 +11,16 @@ module.exports = function (grunt) {
     nodeunit: {
       files: ['test/**/*_test.js']
     },
+    jasmine_node: {
+      options: {
+        forceExit: true,
+        match: '.',
+        matchall: false,
+        extensions: 'js',
+        specNameMatcher: 'spec'
+      },
+      all: ['spec/']
+    },
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -42,7 +52,11 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-jasmine-node');
+
   // Default task.
   grunt.registerTask('default', ['jshint', 'nodeunit']);
+  grunt.registerTask('jasmine', ['jasmine_node']);
 
+  grunt.registerTask('all', ['default', 'jasmine']);
 };
