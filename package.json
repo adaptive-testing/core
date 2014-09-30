@@ -33,8 +33,10 @@
     "test": "grunt"
   },
   "dependencies": {
+    "lodash": "^2.4.1",
+    "mongoose": "^3.8.17",
+    "readline-sync": "0.2.2",
     "underscore": "^1.6.0",
-    "underscore-query": "^0.4.0",
-    "readline-sync": "0.2.2"
+    "underscore-query": "^0.4.0"
   }
 }
