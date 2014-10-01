@@ -1,6 +1,6 @@
 {
   "name": "adaptive-tester-core",
-  "version": "0.0.0",
+  "version": "0.0.1g",
   "main": "lib/adaptive-tester-core.js",
   "description": "The core functions for the adaptive tester application.",
   "homepage": "https://github.com/adaptive-testing/core",
@@ -31,7 +31,7 @@
     "jasmine-node": "~2.0.0"
   },
   "scripts": {
-    "test": "grunt all"
+    "test": "grunt jasmine"
   },
   "dependencies": {
     "lodash": "^2.4.1",
