@@ -45,7 +45,6 @@ describe('Question Unit Tests', function () {
   it('should not allow more than one correct answer', function (done) {
     question.answers.push({text: 'With care', correct: true});
     question.save(function (err) {
-      console.log(err);
       expect(err.name).toBe('ValidationError');
       done();
     });
@@ -54,7 +53,6 @@ describe('Question Unit Tests', function () {
   it('should not allow no answers', function (done) {
     question.answers = [];
     question.save(function (err) {
-      console.log(err);
       expect(err.name).toBe('ValidationError');
       done();
     });
@@ -63,7 +61,6 @@ describe('Question Unit Tests', function () {
   it('should only accept an array of answers', function (done) {
     question.answers = "Cool answer";
     question.save(function (err) {
-      console.log(err);
       expect(err.name).toBe('TypeError');
       done();
     });
@@ -72,7 +69,6 @@ describe('Question Unit Tests', function () {
   it('should not accept strings as difficulty', function (done){
     question.difficulty = "Hard";
     question.save(function (err) {
-      console.log(err);
       expect(err.name).toBe('CastError');
       done();
     });
@@ -81,7 +77,6 @@ describe('Question Unit Tests', function () {
   it('should not accept a difficulty less than zero (0)', function (done) {
     question.difficulty = -1;
     question.save(function (err) {
-      console.log(err);
       expect(err.name).toBe('ValidationError');
       done();
     });
@@ -90,7 +85,6 @@ describe('Question Unit Tests', function () {
   it('should not accept a difficulty more than one hundred (100)', function (done) {
     question.difficulty = 101;
     question.save(function (err) {
-      console.log(err);
       expect(err.name).toBe('ValidationError');
       done();
     });
