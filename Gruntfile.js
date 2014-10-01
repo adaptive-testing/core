@@ -34,6 +34,9 @@ module.exports = function (grunt) {
       },
       test: {
         src: ['test/**/*.js']
+      },
+      spec: {
+        src: ['spec/**/*.js']
       }
     },
     watch: {

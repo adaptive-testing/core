@@ -6,17 +6,8 @@ var User = require('../../lib/models/User');
 var mongoose = require('mongoose');
 
 var user;
-var originalTimeout;
 
 describe('User Unit Tests', function () {
-
-  // before(function () {
-  //   mongoose.connect(require('../../config/test.env').db);
-  // });
-
-  // after(function () {
-  //   mongoose.disconnect();
-  // });
 
   beforeEach(function () {
     mongoose.connect(require('../../config/test.env').db);
@@ -49,4 +40,4 @@ describe('User Unit Tests', function () {
     });
   });
 
-})
+});
