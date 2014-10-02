@@ -46,11 +46,15 @@ module.exports = function (grunt) {
       },
       lib: {
         files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib', 'nodeunit']
+        tasks: ['jshint:lib', 'jasmine']
       },
       test: {
         files: '<%= jshint.test.src %>',
         tasks: ['jshint:test', 'nodeunit']
+      },
+      spec: {
+        files: '<%= jshint.spec.src %>',
+        tasks: ['jshint:spec', 'jasmine']
       }
     }
   });
@@ -60,6 +64,6 @@ module.exports = function (grunt) {
   // Default task.
   grunt.registerTask('default', ['jshint', 'nodeunit']);
   grunt.registerTask('jasmine', ['jasmine_node']);
-
+  grunt.registerTask('start', ['watch:lib', 'watch:spec']);
   grunt.registerTask('all', ['jshint', 'jasmine', 'nodeunit']);
 };

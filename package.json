@@ -21,15 +21,16 @@
   ],
   "keywords": [],
   "devDependencies": {
+    "grunt-concurrent": "^1.0.0",
     "grunt-contrib-jshint": "~0.7.0",
     "grunt-contrib-nodeunit": "~0.2.0",
     "grunt-contrib-watch": "~0.5.0",
-    "load-grunt-tasks": "~0.2.0",
-    "time-grunt": "~0.2.0",
-    "jshint-stylish": "~0.1.3",
-    "nodeunit": "~0.8.6",
+    "grunt-jasmine-node": "~0.2.1",
     "jasmine-node": "~2.0.0",
-    "grunt-jasmine-node": "~0.2.1"
+    "jshint-stylish": "~0.1.3",
+    "load-grunt-tasks": "~0.2.0",
+    "nodeunit": "~0.8.6",
+    "time-grunt": "~0.2.0"
   },
   "scripts": {
     "test": "grunt jasmine"
