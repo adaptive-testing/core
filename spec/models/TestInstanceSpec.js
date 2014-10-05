@@ -1,6 +1,7 @@
 'use strict';
 var expect = require('expect.js');
 var TestInstance = require('../../lib/models/TestInstance');
+var Errors = require('../../lib/errors');
 
 var testInstance;
 var user;
@@ -10,6 +11,7 @@ describe('TestInstance Unit Tests', function () {
 
   beforeEach(function () {
     user = test = {};
+    testInstance = undefined; // Restore to original
   });
 
   it('should instantiate with a user id and a test id', function () {
@@ -20,7 +22,17 @@ describe('TestInstance Unit Tests', function () {
     expect(testInstance.questionsAsked.length).to.be(0);
   });
 
-  it('should throw a ParameterError if no parameters are specified.');
-  it('should throw a ParameterError if a non-string parameter is used.');
+  it('should throw a ParameterError if no parameters are specified.', function () {
+    expect(function () {new TestInstance();}).to.throwException(function (e){
+      expect(e).to.be.a(Errors.ParameterError);
+    });
+  });
+
+  it('should throw a ParameterError if a non-string parameter is used.', function () {
+    expect(function () {new TestInstance(1, 10);}).to.throwException(function (e){
+      expect(e).to.be.a(Errors.ParameterError);
+    });
+
+  });
 
 });

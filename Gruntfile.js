@@ -59,7 +59,7 @@ module.exports = function (grunt) {
 
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'nodeunit']);
+  grunt.registerTask('default', ['jshint', 'mochaTest']);
   grunt.registerTask('start', ['watch:lib', 'watch:spec']);
   grunt.registerTask('all', ['jshint', 'mochaTest', 'nodeunit']);
 };
