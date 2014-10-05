@@ -15,7 +15,8 @@
     "describe",
     "beforeEach",
     "afterEach",
-    "it",
-    "expect"
+    "before",
+    "after",
+    "it"
   ]
 }

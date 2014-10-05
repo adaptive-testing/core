@@ -11,15 +11,13 @@ module.exports = function (grunt) {
     nodeunit: {
       files: ['test/**/*_test.js']
     },
-    jasmine_node: {
-      options: {
-        forceExit: true,
-        match: '.',
-        matchall: false,
-        extensions: 'js',
-        specNameMatcher: 'spec'
-      },
-      all: ['spec/']
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+        },
+        src: ['spec/**/*.js']
+      }
     },
     jshint: {
       options: {
@@ -53,17 +51,15 @@ module.exports = function (grunt) {
         tasks: ['jshint:test', 'nodeunit']
       },
       spec: {
-        files: '<%= jshint.spec.src %>',
-        tasks: ['jshint:spec', 'jasmine']
+        files: '<%= jshint.mochaTest.test.src %>',
+        tasks: ['jshint:spec', 'mochaTest']
       }
     }
   });
 
-  grunt.loadNpmTasks('grunt-jasmine-node');
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'nodeunit']);
-  grunt.registerTask('jasmine', ['jasmine_node']);
   grunt.registerTask('start', ['watch:lib', 'watch:spec']);
-  grunt.registerTask('all', ['jshint', 'jasmine', 'nodeunit']);
+  grunt.registerTask('all', ['jshint', 'mochaTest', 'nodeunit']);
 };

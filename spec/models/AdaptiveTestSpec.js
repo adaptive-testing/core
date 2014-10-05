@@ -1,7 +1,7 @@
 /**
  * Tests for the AdaptiveTest model.
  */
-
+var expect = require('expect.js');
 var Question = require('../../lib/models/Question');
 var AdaptiveTest = require('../../lib/models/AdaptiveTest');
 
@@ -45,7 +45,7 @@ describe('AdaptiveTest Unit Tests', function () {
 
   it('should save an AdaptiveTest without problems', function (done) {
     adaptiveTest.save(function (err) {
-      expect(err).toBeNull();
+      expect(err).to.be(null);
       done();
     });
   });
@@ -54,7 +54,7 @@ describe('AdaptiveTest Unit Tests', function () {
     question.save(function (err, quest) {
       adaptiveTest.questions.push(quest._id);
       adaptiveTest.save(function (err) {
-        expect(err).toBeNull();
+        expect(err).to.be(null);
         done();
       });
     });
