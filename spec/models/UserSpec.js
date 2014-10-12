@@ -7,10 +7,13 @@ var mongoose = require('mongoose');
 
 var user;
 
-describe('User Unit Tests', function () {
+describe('The User Model', function () {
+
+  before (function () {
+    mongoose.connect(require('../../config/test.env').db);
+  });
 
   beforeEach(function () {
-    mongoose.connect(require('../../config/test.env').db);
     user = new User({
       userId: 'testId',
       fullName: 'Testy McTester',
@@ -22,6 +25,10 @@ describe('User Unit Tests', function () {
 
   afterEach(function () {
     User.remove().exec();
+
+  });
+
+  after(function () {
     mongoose.disconnect();
   });
 

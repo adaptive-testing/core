@@ -15,6 +15,7 @@ module.exports = function (grunt) {
       test: {
         options: {
           reporter: 'spec',
+          growl: 'true'
         },
         src: ['spec/**/*.js']
       }
@@ -44,15 +45,23 @@ module.exports = function (grunt) {
       },
       lib: {
         files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib', 'jasmine']
+        tasks: ['jshint:lib', 'mochaTest']
       },
       test: {
         files: '<%= jshint.test.src %>',
         tasks: ['jshint:test', 'nodeunit']
       },
       spec: {
-        files: '<%= jshint.mochaTest.test.src %>',
+        files: '<%= jshint.spec.src %>',
         tasks: ['jshint:spec', 'mochaTest']
+      }
+    },
+    concurrent: {
+      options: {
+        logConcurrentOutput: true
+      },
+      specs: {
+        tasks: ['watch:lib', 'watch:spec']
       }
     }
   });
@@ -60,6 +69,6 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.registerTask('start', ['watch:lib', 'watch:spec']);
+  grunt.registerTask('start', ['concurrent:specs']);
   grunt.registerTask('all', ['jshint', 'mochaTest', 'nodeunit']);
 };
