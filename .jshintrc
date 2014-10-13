@@ -17,6 +17,8 @@
     "afterEach",
     "before",
     "after",
-    "it"
+    "it",
+    "xit",
+    "xdescribe"
   ]
 }

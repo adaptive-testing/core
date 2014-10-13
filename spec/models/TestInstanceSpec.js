@@ -6,6 +6,7 @@ var AdaptiveTest = require('../../lib/models/AdaptiveTest');
 var Question = require('../../lib/models/Question');
 var Errors = require('../../lib/errors');
 var mongoose = require('mongoose');
+var async = require('async');
 
 var testInstance;
 var user;
@@ -39,7 +40,7 @@ describe('TestInstance', function () {
         text: 'When it makes sense',
         correct: true
       }],
-      difficulty: 50,
+      difficulty: 50
     });
 
     // Save the user
@@ -101,6 +102,46 @@ describe('TestInstance', function () {
 
   describe('response processing', function () {
 
+    before(function (done) {
+      // Add in a bunch of questions.
+      async.parallel([
+          function (complete) {
+            new Question({
+              text: 'Test Q1',
+              answers: [{
+                text: 'Test Ans1',
+                correct: false
+              }, {
+                text: 'When it makes sense',
+                correct: true
+              }],
+              difficulty: 52
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Test Q2',
+              answers: [{
+                text: 'Test Ans2',
+                correct: false
+              },{
+                text: 'When it makes sense',
+                correct: true
+              }],
+              difficulty: 48
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          }
+      ], function() {
+        done();
+      });
+
+
+    });
+
     beforeEach(function (done) {
       testInstance = new TestInstance(user, test);
       testInstance.getNextQuestion(function (err, quest) {
@@ -126,6 +167,82 @@ describe('TestInstance', function () {
       expect(correct).to.be(false);
     });
 
+
+    xdescribe('ability modifications', function () {
+      it('should become much higher if the questions difficulty was 2 points or more higher', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.greaterThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.greaterThan(20);
+      });
+
+      it('should become somewhat higher if the questions difficulty was between 1.5 - 2 points higher', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.greaterThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.greaterThan(10);
+      });
+
+      it('should become higher if the questions difficulty was between 1 - 1.5 points higher', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.greaterThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.greaterThan(5);
+      });
+
+      it('should become slightly higher if the questions difficulty was between 0 - 1 points higher', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.greaterThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.greaterThan(1);
+      });
+
+      it('should become slightly lower if the questions difficulty was between 0 - 1 points lower', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.lessThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.lessThan(-1);
+      });
+
+      it('should become lower if the questions difficulty was between 1 - 1.5 points lower', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.lessThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.lessThan(-5);
+      });
+
+      it('should become somewhat lower if the questions difficulty was between 1.5 - 2 points lower', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.lessThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.lessThan(-10);
+      });
+
+      it('should become much lower if the questions difficulty was 2 points or more lower', function () {
+        var oldAbility = testInstance.getUserAbility();
+        var responseId = question.answers[1].id;
+        testInstance.processResponse(question._id, responseId);
+        var newAbility = testInstance.getUserAbility();
+        expect(newAbility).to.be.lessThan(oldAbility);
+        expect(newAbility - oldAbility).to.be.lessThan(-20);
+      });
+
+    });
+
   });
 
   it('should be able to get the next question', function (done){
@@ -138,19 +255,9 @@ describe('TestInstance', function () {
   });
 
 
-  it('should be able to get the next question after a correct answer');
-  it('should be able to get the next question after an incorrect answer');
 
-  describe('ability modifications', function () {
-    it('should become much higher if the questions difficulty was 2 points or more higher');
-    it('should become somewhat higher if the questions difficulty was between 1.5 - 2 points higher');
-    it('should become higher if the questions difficulty was between 1 - 1.5 points higher');
-    it('should become slightly higher if the questions difficulty was between 0 - 1 points higher');
-    it('should become slightly lower if the questions difficulty was between 0 - 1 points lower');
-    it('should become lower if the questions difficulty was between 1 - 1.5 points lower');
-    it('should become somewhat lower if the questions difficulty was between 1.5 - 2 points lower');
-    it('should become much lower if the questions difficulty was 2 points or more lower');
-  });
+
+
 
 
 });
