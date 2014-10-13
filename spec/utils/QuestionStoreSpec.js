@@ -60,7 +60,7 @@ describe('The QuestionStore', function () {
     });
   });
 
-  it('should store changes back to the database', function (done){
+  it('should store changes back to the database', function (done) {
 
     questionStore.save(function (err, errors, numSaved) {
       expect(err).to.be(null);
@@ -69,11 +69,15 @@ describe('The QuestionStore', function () {
       done();
     });
 
-
-
   });
 
-  it('should remove questionsToSave after saving');
+  it('should remove questionsToSave after saving', function (done) {
+    questionStore.save(function () {
+      expect(questionStore.questionsToSave.length).to.be(0);
+      done();
+    });
+
+  });
 
 
 
