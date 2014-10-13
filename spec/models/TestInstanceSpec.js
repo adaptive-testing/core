@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 var testInstance;
 var user;
 var test;
+var question;
 
 describe('TestInstance', function () {
 
@@ -38,7 +39,7 @@ describe('TestInstance', function () {
         text: 'When it makes sense',
         correct: true
       }],
-      difficulty: 10,
+      difficulty: 50,
     });
 
     // Save the user
@@ -98,11 +99,44 @@ describe('TestInstance', function () {
     expect(testInstance.getUserAbility()).to.be(50);
   });
 
-  it('should be able to get the next question'); /*, function (){
-    testInstance = new TestInstance(user, test);
-    expect(testInstance.getNextQuestion()).to.be.a(Question);
+  describe('response processing', function () {
+
+    beforeEach(function (done) {
+      testInstance = new TestInstance(user, test);
+      testInstance.getNextQuestion(function (err, quest) {
+        question = quest;
+        done();
+      });
+    });
+
+    afterEach(function () {
+      testInstance = null;
+      question = null;
+    });
+
+    it('should process a correct response', function () {
+      var responseId = question.answers[1].id;
+      var correct = testInstance.processResponse(question._id, responseId);
+      expect(correct).to.be(true);
+    });
+
+    it('should process an incorrect response', function () {
+      var responseId = question.answers[0].id;
+      var correct = testInstance.processResponse(question._id, responseId);
+      expect(correct).to.be(false);
+    });
+
   });
-  */
+
+  it('should be able to get the next question', function (done){
+    testInstance = new TestInstance(user, test);
+    testInstance.getNextQuestion(function (err, nextQuestion) {
+      expect(err).to.be(null);
+      expect(nextQuestion).to.be.a(Question);
+      done();
+    });
+  });
+
 
   it('should be able to get the next question after a correct answer');
   it('should be able to get the next question after an incorrect answer');

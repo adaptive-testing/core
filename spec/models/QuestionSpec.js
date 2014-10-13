@@ -99,8 +99,6 @@ describe('Question Unit Tests', function () {
     });
   });
 
-
-
   it('should return a proper value for the incorrect property', function (done) {
     question.asked = 10;
     question.correct = 5;
@@ -110,5 +108,18 @@ describe('Question Unit Tests', function () {
       done();
     });
   });
+
+  it('should have an id associated with the answers', function (done) {
+    question.save(function () {
+      Question.find(function (err, questions) {
+        expect(err).to.be(null);
+        expect(questions[0].answers[0]._id).to.be.ok();
+        done();
+      });
+    });
+
+  });
+
+
 
 });
