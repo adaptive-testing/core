@@ -31,12 +31,14 @@
     "load-grunt-tasks": "~0.2.0",
     "mocha": "^1.21.4",
     "nodeunit": "~0.8.6",
+    "sinon": "^1.10.3",
     "time-grunt": "~0.2.0"
   },
   "scripts": {
     "test": "grunt mochaTest"
   },
   "dependencies": {
+    "async": "^0.9.0",
     "lodash": "^2.4.1",
     "mongoose": "^3.8.17",
     "readline-sync": "0.2.2",
