@@ -7,6 +7,9 @@ var Question = require('../../lib/models/Question');
 var Errors = require('../../lib/errors');
 var mongoose = require('mongoose');
 var async = require('async');
+var sinon = require('sinon');
+var _ = require('lodash');
+require('underscore-query')(_);
 
 var testInstance;
 var user;
@@ -155,6 +158,10 @@ describe('TestInstance', function () {
       question = null;
     });
 
+    after(function () {
+      Question.remove().exec();
+    });
+
     it('should process a correct response', function () {
       var responseId = question.answers[1].id;
       var correct = testInstance.processResponse(question._id, responseId);
@@ -168,77 +175,282 @@ describe('TestInstance', function () {
     });
 
 
-    xdescribe('ability modifications', function () {
-      it('should become much higher if the questions difficulty was 2 points or more higher', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.greaterThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.greaterThan(20);
+    describe('ability modifications', function () {
+
+
+      before(function (done) {
+        // Add in a bunch of questions.
+        async.parallel([
+          function (complete) {
+            new Question({
+              text: 'Much Higher',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 60
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Somewhat Higher',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 55
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Higher',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 52
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Slightly Higher',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 51
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Slightly Lower',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 49
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Lower',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 48
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Somewhat Lower',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 45
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          },
+          function (complete) {
+            new Question({
+              text: 'Much Lower',
+              answers: [{
+                text: 'Test Ans1',
+                correct: true
+              }, {
+                text: 'When it makes sense',
+                correct: false
+              }],
+              difficulty: 40
+            }).save(function (err, quest) {
+                  complete(err, quest);
+                });
+          }
+        ], function() {
+          done();
+        });
       });
 
-      it('should become somewhat higher if the questions difficulty was between 1.5 - 2 points higher', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.greaterThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.greaterThan(10);
+      var questionHolder;
+      var getStub;
+
+      beforeEach(function (done) {
+        questionHolder = question;
+        testInstance = new TestInstance(user, test);
+        Question.find(function (err, questions) {
+          testInstance.fakeAskedQuestions = questions;
+          getStub = sinon.stub(testInstance, 'getNextQuestion');
+          done();
+        });
       });
 
-      it('should become higher if the questions difficulty was between 1 - 1.5 points higher', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.greaterThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.greaterThan(5);
+      afterEach(function () {
+        getStub.restore();
+        question = questionHolder;
+        testInstance = null;
       });
 
-      it('should become slightly higher if the questions difficulty was between 0 - 1 points higher', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.greaterThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.greaterThan(1);
+      after(function () {
+        Question.remove().exec();
       });
 
-      it('should become slightly lower if the questions difficulty was between 0 - 1 points lower', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.lessThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.lessThan(-1);
+
+      it('should become much higher if the questions difficulty was 2 points or more higher and answered correctly', function (done) {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Much Higher'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[0].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.greaterThan(oldAbility);
+          console.log(newAbility - oldAbility);
+          expect(newAbility - oldAbility).to.be.greaterThan(3);
+          done();
+        });
       });
 
-      it('should become lower if the questions difficulty was between 1 - 1.5 points lower', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.lessThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.lessThan(-5);
+      it('should become somewhat higher if the questions difficulty was between 1.5 - 2 points higher and answered correctly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Somewhat Higher'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[0].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.greaterThan(oldAbility);
+          console.log(newAbility - oldAbility);
+          expect(newAbility - oldAbility).to.be.greaterThan(10);
+        });
       });
 
-      it('should become somewhat lower if the questions difficulty was between 1.5 - 2 points lower', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.lessThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.lessThan(-10);
+      it('should become higher if the questions difficulty was between 1 - 1.5 points higher and answered correctly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Higher'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[0].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.greaterThan(oldAbility);
+          expect(newAbility - oldAbility).to.be.greaterThan(5);
+        });
       });
 
-      it('should become much lower if the questions difficulty was 2 points or more lower', function () {
-        var oldAbility = testInstance.getUserAbility();
-        var responseId = question.answers[1].id;
-        testInstance.processResponse(question._id, responseId);
-        var newAbility = testInstance.getUserAbility();
-        expect(newAbility).to.be.lessThan(oldAbility);
-        expect(newAbility - oldAbility).to.be.lessThan(-20);
+      it('should become slightly higher if the questions difficulty was between 0 - 1 points higher and answered correctly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Slightly Higher'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[0].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.greaterThan(oldAbility);
+          expect(newAbility - oldAbility).to.be.greaterThan(1);
+        });
+      });
+
+      it('should become slightly lower if the questions difficulty was between 0 - 1 points lower and answered incorrectly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Slightly Lower'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[1].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.lessThan(oldAbility);
+          expect(newAbility - oldAbility).to.be.lessThan(-1);
+        });
+      });
+
+      it('should become lower if the questions difficulty was between 1 - 1.5 points lower and answered incorrectly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Lower'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[1].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.lessThan(oldAbility);
+          expect(newAbility - oldAbility).to.be.lessThan(-5);
+        });
+      });
+
+      it('should become somewhat lower if the questions difficulty was between 1.5 - 2 points lower and answered incorrectly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Somewhat Lower'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[1].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.lessThan(oldAbility);
+          expect(newAbility - oldAbility).to.be.lessThan(-10);
+        });
+      });
+
+      it('should become much lower if the questions difficulty was 2 points or more lower and answered incorrectly', function () {
+        var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Much Lower'})[0];
+        testInstance.questionsAsked = [questionToUse];
+        getStub.yields(null, questionToUse);
+
+        testInstance.getNextQuestion(function (err, questionToAsk) {
+          var oldAbility = testInstance.getUserAbility();
+          var responseId = questionToAsk.answers[1].id;
+          testInstance.processResponse(questionToAsk._id, responseId);
+          var newAbility = testInstance.getUserAbility();
+          expect(newAbility).to.be.lessThan(oldAbility);
+          expect(newAbility - oldAbility).to.be.lessThan(-20);
+        });
       });
 
     });
