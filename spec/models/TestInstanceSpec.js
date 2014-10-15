@@ -8,6 +8,7 @@ var Errors = require('../../lib/errors');
 var mongoose = require('mongoose');
 var async = require('async');
 var sinon = require('sinon');
+
 var _ = require('lodash');
 require('underscore-query')(_);
 
@@ -31,7 +32,13 @@ describe('TestInstance', function () {
     // Create a test
     var adaptiveTestObj = new AdaptiveTest({
       title: 'A Test Test',
-      description: 'Just for testing'
+      description: 'Just for testing',
+      config: {
+        maxQuestions: 5,
+        minQuestions: 2,
+        masteryThreshold: 80,
+        failureThreshold: 40
+      }
     });
     // Create a question
     var questionObj = new Question({
@@ -101,6 +108,15 @@ describe('TestInstance', function () {
   it('should set the inital user ability to 50', function () {
     testInstance = new TestInstance(user, test);
     expect(testInstance.getUserAbility()).to.be(50);
+  });
+
+  it('should be able to get the next question', function (done){
+    testInstance = new TestInstance(user, test);
+    testInstance.getNextQuestion(function (err, nextQuestion) {
+      expect(err).to.be(null);
+      expect(nextQuestion).to.be.a(Question);
+      done();
+    });
   });
 
   describe('response processing', function () {
@@ -456,20 +472,168 @@ describe('TestInstance', function () {
   });
 
   describe('stopping criteria', function () {
-    it('should not permit stopping until the minimum configured questions are asked');
-    it('should stop whenever the maximum configured questions are asked');
-    it('should stop whenever the configured mastery threshold has been reached');
-    it('should stop whenever the configured failure threshold has been reached');
-  });
 
-  it('should be able to get the next question', function (done){
-    testInstance = new TestInstance(user, test);
-    testInstance.getNextQuestion(function (err, nextQuestion) {
-      expect(err).to.be(null);
-      expect(nextQuestion).to.be.a(Question);
-      done();
+    before(function (done) {
+      async.parallel([
+        function (complete) {
+          new Question({
+            text: 'Test Q1',
+            answers: [{
+              text: 'Test Ans1',
+              correct: false
+            }, {
+              text: 'When it makes sense',
+              correct: true
+            }],
+            difficulty: 52
+          }).save(function (err, quest) {
+                complete(err, quest);
+              });
+        },
+        function (complete) {
+          new Question({
+            text: 'Test Q2',
+            answers: [{
+              text: 'Test Ans2',
+              correct: false
+            },{
+              text: 'When it makes sense',
+              correct: true
+            }],
+            difficulty: 48
+          }).save(function (err, quest) {
+                complete(err, quest);
+              });
+        },
+        function (complete) {
+          new Question({
+            text: 'Test Q3',
+            answers: [{
+              text: 'Test Ans2',
+              correct: false
+            },{
+              text: 'When it makes sense',
+              correct: true
+            }],
+            difficulty: 48
+          }).save(function (err, quest) {
+                complete(err, quest);
+              });
+        },
+        function (complete) {
+          new Question({
+            text: 'Test Q4',
+            answers: [{
+              text: 'Test Ans2',
+              correct: false
+            },{
+              text: 'When it makes sense',
+              correct: true
+            }],
+            difficulty: 48
+          }).save(function (err, quest) {
+                complete(err, quest);
+              });
+        },
+        function (complete) {
+          new Question({
+            text: 'Test Q5',
+            answers: [{
+              text: 'Test Ans2',
+              correct: false
+            },{
+              text: 'When it makes sense',
+              correct: true
+            }],
+            difficulty: 48
+          }).save(function (err, quest) {
+                complete(err, quest);
+              });
+        },
+        function (complete) {
+          new Question({
+            text: 'Test Q6',
+            answers: [{
+              text: 'Test Ans2',
+              correct: false
+            },{
+              text: 'When it makes sense',
+              correct: true
+            }],
+            difficulty: 48
+          }).save(function (err, quest) {
+                complete(err, quest);
+              });
+        }
+      ], function() {
+        done();
+      });
+
+    });
+    after(function (){
+      Question.remove().exec();
+    });
+
+
+    it('should stop whenever the maximum configured questions are asked', function (done) {
+      testInstance = new TestInstance(user, test);
+      testInstance.getNextQuestion(function () {
+        testInstance.getNextQuestion(function () {
+          testInstance.getNextQuestion(function () {
+            testInstance.getNextQuestion(function () {
+              testInstance.getNextQuestion(function () {
+                testInstance.getNextQuestion(function (err6, next6) {
+                  expect(next6).to.be(null);
+                  expect(err6).to.be.a(Errors.MaxQuestionsError);
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it('should stop whenever the configured mastery threshold has been reached and the minimum questions have been asked', function (done) {
+      testInstance = new TestInstance(user, test);
+      var abilityStub = sinon.stub(testInstance, 'getUserAbility', function () {
+        return 85;
+      });
+
+      // Min questions is set to 2... so we make sure we ask at least 2.
+      testInstance.getNextQuestion(function () {
+        testInstance.getNextQuestion(function () {
+          testInstance.getNextQuestion(function (err, nextQuestion) {
+            expect(err).to.be.an(Errors.MasteryThresholdError);
+            expect(nextQuestion).to.be(null);
+            abilityStub.restore();
+            done();
+          });
+        });
+      });
+
+    });
+
+    it('should stop whenever the configured failure threshold has been reached and the minimum questions have been asked', function (done) {
+      testInstance = new TestInstance(user, test);
+      var abilityStub = sinon.stub(testInstance, 'getUserAbility', function () {
+        return 30;
+      });
+
+      testInstance.getNextQuestion(function () {
+        testInstance.getNextQuestion(function () {
+          testInstance.getNextQuestion(function (err, nextQuestion) {
+            expect(err).to.be.an(Errors.FailureThresholdError);
+            expect(nextQuestion).to.be(null);
+            abilityStub.restore();
+            done();
+          });
+        });
+      });
     });
   });
+
+
 
 
 

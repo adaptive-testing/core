@@ -12,9 +12,11 @@ var adaptiveTest;
 
 describe('AdaptiveTest Unit Tests', function () {
 
-  beforeEach(function () {
-    // Connect to the test DB
+  before(function () {
     mongoose.connect(require('../../config/test.env').db);
+  });
+
+  beforeEach(function () {
 
     // Create a question
     question = new Question({
@@ -32,7 +34,12 @@ describe('AdaptiveTest Unit Tests', function () {
     // Create a test
     adaptiveTest = new AdaptiveTest({
       title: 'A Test Test',
-      description: 'Just for testing'
+      description: 'Just for testing',
+      config: {
+        maxQuestions: 30,
+        masteryThreshold: 80,
+        failureThreshold: 40
+      }
     });
 
   });
@@ -40,6 +47,9 @@ describe('AdaptiveTest Unit Tests', function () {
   afterEach(function () {
     Question.remove().exec();
     AdaptiveTest.remove().exec();
+  });
+
+  after(function () {
     mongoose.disconnect();
   });
 
@@ -50,7 +60,7 @@ describe('AdaptiveTest Unit Tests', function () {
     });
   });
 
-  xit('should require a configuration object to be present', function (done) {
+  it('should require a configuration object to be present', function (done) {
     adaptiveTest.config = null;
     adaptiveTest.save(function (err) {
       expect(err).to.be.ok();
