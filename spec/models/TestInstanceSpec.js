@@ -221,7 +221,7 @@ describe('TestInstance', function () {
                 text: 'When it makes sense',
                 correct: false
               }],
-              difficulty: 52
+              difficulty: 53
             }).save(function (err, quest) {
                   complete(err, quest);
                 });
@@ -266,7 +266,7 @@ describe('TestInstance', function () {
                 text: 'When it makes sense',
                 correct: false
               }],
-              difficulty: 48
+              difficulty: 47
             }).save(function (err, quest) {
                   complete(err, quest);
                 });
@@ -330,7 +330,7 @@ describe('TestInstance', function () {
       });
 
 
-      it('should become much higher if the questions difficulty was 2 points or more higher and answered correctly', function (done) {
+      it('should become much higher if the questions difficulty was 10 points or more higher and answered correctly', function (done) {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Much Higher'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -341,13 +341,12 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.greaterThan(oldAbility);
-          console.log(newAbility - oldAbility);
-          expect(newAbility - oldAbility).to.be.greaterThan(3);
+          expect(newAbility - oldAbility).to.be.within(10, 15);
           done();
         });
       });
 
-      it('should become somewhat higher if the questions difficulty was between 1.5 - 2 points higher and answered correctly', function () {
+      it('should become somewhat higher if the questions difficulty was between 5 - 9 points higher and answered correctly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Somewhat Higher'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -358,12 +357,11 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.greaterThan(oldAbility);
-          console.log(newAbility - oldAbility);
-          expect(newAbility - oldAbility).to.be.greaterThan(10);
+          expect(newAbility - oldAbility).to.be.within(5, 10);
         });
       });
 
-      it('should become higher if the questions difficulty was between 1 - 1.5 points higher and answered correctly', function () {
+      it('should become higher if the questions difficulty was between 2 - 4 points higher and answered correctly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Higher'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -374,11 +372,11 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.greaterThan(oldAbility);
-          expect(newAbility - oldAbility).to.be.greaterThan(5);
+          expect(newAbility - oldAbility).to.be.within(2.5, 5);
         });
       });
 
-      it('should become slightly higher if the questions difficulty was between 0 - 1 points higher and answered correctly', function () {
+      it('should become slightly higher if the questions difficulty was between 0 - 2 points higher and answered correctly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Slightly Higher'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -389,11 +387,11 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.greaterThan(oldAbility);
-          expect(newAbility - oldAbility).to.be.greaterThan(1);
+          expect(newAbility - oldAbility).to.be.within(0, 2.5);
         });
       });
 
-      it('should become slightly lower if the questions difficulty was between 0 - 1 points lower and answered incorrectly', function () {
+      it('should become slightly lower if the questions difficulty was between 0 - 2 points lower and answered incorrectly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Slightly Lower'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -404,11 +402,11 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.lessThan(oldAbility);
-          expect(newAbility - oldAbility).to.be.lessThan(-1);
+          expect(newAbility - oldAbility).to.be.within(-2.5, 0);
         });
       });
 
-      it('should become lower if the questions difficulty was between 1 - 1.5 points lower and answered incorrectly', function () {
+      it('should become lower if the questions difficulty was between 2 - 4 points lower and answered incorrectly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Lower'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -419,11 +417,11 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.lessThan(oldAbility);
-          expect(newAbility - oldAbility).to.be.lessThan(-5);
+          expect(newAbility - oldAbility).to.be.within(-5, -2.5);
         });
       });
 
-      it('should become somewhat lower if the questions difficulty was between 1.5 - 2 points lower and answered incorrectly', function () {
+      it('should become somewhat lower if the questions difficulty was between 5 - 9 points lower and answered incorrectly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Somewhat Lower'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -434,11 +432,11 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.lessThan(oldAbility);
-          expect(newAbility - oldAbility).to.be.lessThan(-10);
+          expect(newAbility - oldAbility).to.be.within(-10, -5);
         });
       });
 
-      it('should become much lower if the questions difficulty was 2 points or more lower and answered incorrectly', function () {
+      it('should become much lower if the questions difficulty was 10 points or more lower and answered incorrectly', function () {
         var questionToUse = _.query(testInstance.fakeAskedQuestions, {text: 'Much Lower'})[0];
         testInstance.questionsAsked = [questionToUse];
         getStub.yields(null, questionToUse);
@@ -449,12 +447,19 @@ describe('TestInstance', function () {
           testInstance.processResponse(questionToAsk._id, responseId);
           var newAbility = testInstance.getUserAbility();
           expect(newAbility).to.be.lessThan(oldAbility);
-          expect(newAbility - oldAbility).to.be.lessThan(-20);
+          expect(newAbility - oldAbility).to.be.within(-20, -10);
         });
       });
 
     });
 
+  });
+
+  describe('stopping criteria', function () {
+    it('should not permit stopping until the minimum configured questions are asked');
+    it('should stop whenever the maximum configured questions are asked');
+    it('should stop whenever the configured mastery threshold has been reached');
+    it('should stop whenever the configured failure threshold has been reached');
   });
 
   it('should be able to get the next question', function (done){

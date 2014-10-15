@@ -26,7 +26,7 @@ describe('AdaptiveTest Unit Tests', function () {
         text: 'When it makes sense',
         correct: true
       }],
-      difficulty: 10,
+      difficulty: 10
     });
 
     // Create a test
@@ -49,6 +49,16 @@ describe('AdaptiveTest Unit Tests', function () {
       done();
     });
   });
+
+  xit('should require a configuration object to be present', function (done) {
+    adaptiveTest.config = null;
+    adaptiveTest.save(function (err) {
+      expect(err).to.be.ok();
+      done();
+    });
+  });
+
+
 
   it('should save a question to the test given an ID', function (done) {
     question.save(function (err, quest) {
